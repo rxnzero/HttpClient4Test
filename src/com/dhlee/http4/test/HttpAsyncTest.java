@@ -19,9 +19,13 @@ public class HttpAsyncTest {
     final CloseableHttpAsyncClient httpclient = HttpAsyncClients
         .createDefault();
     httpclient.start();
+    
+    String targetUrl = 
+    		"http://localhost:8080/example/test.jsp";
+//    "http://www.google.com/";
     try {
       final Future<Boolean> future = httpclient.execute(
-          HttpAsyncMethods.createGet("http://www.google.com/"),
+          HttpAsyncMethods.createGet(targetUrl),
           new MyResponseConsumer(), null);
       final Boolean result = future.get();
       if (result != null && result.booleanValue()) {
@@ -40,11 +44,13 @@ public class HttpAsyncTest {
 
     @Override
     protected void onResponseReceived(final HttpResponse response) {
+    	System.out.println(">> onResponseReceived - " + response);
     }
 
     @Override
     protected void onCharReceived(final CharBuffer buf, final IOControl ioctrl)
         throws IOException {
+    	System.out.println(">> onCharReceived - " + buf.toString() +" : " + ioctrl.toString());
       while (buf.hasRemaining()) {
         System.out.print(buf.get());
       }
@@ -52,10 +58,12 @@ public class HttpAsyncTest {
 
     @Override
     protected void releaseResources() {
+    	System.out.println(">> releaseResources");
     }
 
     @Override
     protected Boolean buildResult(final HttpContext context) {
+    	System.out.println(">> buildResult - " + context.toString());
       return Boolean.TRUE;
     }
   }
