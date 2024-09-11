@@ -7,11 +7,13 @@ import org.apache.http.HttpException;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.ResponseHandler;
+import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.params.ClientPNames;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpParams;
 import org.apache.http.util.EntityUtils;
@@ -40,8 +42,16 @@ public class SimpleHttpClient {
 		 System.out.println(System.getProperty("java.vendor.url"));
 		 System.out.println(System.getProperty("java.version"));
 		 
-		 InsecureHttpClientFactory factory = new InsecureHttpClientFactory();
-		 CloseableHttpClient httpclient = factory.build(); //HttpClients.createDefault();
+		 int timeout = 5;
+		 RequestConfig config = RequestConfig.custom()
+		   .setConnectTimeout(timeout * 1000)
+		   .setConnectionRequestTimeout(timeout * 1000)
+		   .setSocketTimeout(timeout * 1000).build();
+		 CloseableHttpClient httpclient = 
+				  HttpClientBuilder.create().setDefaultRequestConfig(config).build();
+		 
+//		 InsecureHttpClientFactory factory = new InsecureHttpClientFactory();
+//		 CloseableHttpClient httpclient = factory.build().set; //HttpClients.createDefault();
 		 
 		 HttpGet httpget = new HttpGet("https://www.google.com/");
 		 
